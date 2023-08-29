@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nginx-exporter-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-exporter
+  template:
+    metadata:
+      labels:
+        app: nginx-exporter
+    spec:
+      containers:
+        - name: nginx-exporter
+          image: nginx/nginx-prometheus-exporter:0.10.0
+          ports:
+            - containerPort: 9113
+          args:
+            - "-nginx.scrape-uri"
+            - "http://{{ .Release.Name }}-nginx-service/basic-metrics"  # Use the service name
